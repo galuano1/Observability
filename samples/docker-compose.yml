@@ -19,6 +19,7 @@ services:
     environment:
       - SERVICE_NAME=frontend
       - ZIPKIN_URL=http://zipkin:9411
+      - WEBTEST_URL=http://webtest:8080/
     depends_on:
       zipkin:
         condition: service_started
