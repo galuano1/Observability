@@ -1,6 +1,6 @@
 # Observability For Distributed MicroServices
 
-####[Approach Rationale](docs/Decision-Process.md)
+#### [Approach Rationale](docs/Decision-Process.md)
 
 A fairly basic implementation of the selected approach can be seen below.
 ![Filter based approach](docs/Filter-Approach.png)
