@@ -24,7 +24,8 @@ public class TracingFilter implements Filter {
     private String serviceName = null;
 
     public void init(FilterConfig filterConfig) throws ServletException {
-        reporter = AsyncReporter.create(URLConnectionSender.create("http://localhost:9411/api/v2/spans"));
+        String zipkinUrl = System.getenv("ZIPKIN_URL");
+        reporter = AsyncReporter.create(URLConnectionSender.create(zipkinUrl + "/api/v2/spans"));
         serviceName = System.getenv("SERVICE_NAME");
 
     }
@@ -35,19 +36,21 @@ public class TracingFilter implements Filter {
             HttpServletRequest httpReq = (HttpServletRequest) servletRequest;
             String traceId = httpReq.getHeader(ZipkinConstants.TRACE_ID) != null ? httpReq.getHeader(ZipkinConstants.TRACE_ID) : getGeneratedId();
             String parentSpanId = httpReq.getHeader(ZipkinConstants.SPAN_ID);
-            String grandparentSpanId = httpReq.getHeader(ZipkinConstants.PARENT_SPAN_ID);
             String method = httpReq.getMethod();
             String uri = httpReq.getRequestURI();
             String spanId = getGeneratedId();
-            long startTime = System.nanoTime()/1000;
+            long startTimeStamp = System.currentTimeMillis()*1000;
+            long startTimeNanos = System.nanoTime();
+            httpReq.setAttribute(ZipkinConstants.TRACE_ID, traceId);
+            httpReq.setAttribute(ZipkinConstants.PARENT_SPAN_ID, parentSpanId);
 
             filterChain.doFilter(servletRequest, servletResponse);
-            long duration = System.nanoTime()/1000 - startTime;
+            long duration = (System.nanoTime() - startTimeNanos)/1000;
             Span span = Span.newBuilder()
                     .id(spanId)
                     .traceId(traceId)
                     .parentId(parentSpanId)
-                    .timestamp(startTime)
+                    .timestamp(startTimeStamp)
                     .duration(duration)
                     .name(method + " " + uri)
                     .kind(Span.Kind.SERVER)
@@ -57,6 +60,7 @@ public class TracingFilter implements Filter {
                     .putTag("http.path", uri)
                     .build();
             reporter.report(span);
+
 
 
 

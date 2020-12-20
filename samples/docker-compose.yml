@@ -1,0 +1,20 @@
+services:
+  # Generate traffic by hitting http://localhost:9090
+  webtest:
+    container_name: webtest
+    image: webtest:0.0.1
+    ports:
+      - 9090:8080
+    environment:
+      - SERVICE_NAME=webtest
+      - ZIPKIN_URL=http://zipkin:9411
+    depends_on:
+      zipkin:
+        condition: service_started
+  # View traces at http://127.0.0.1:9411/zipkin
+  zipkin:
+    image: ghcr.io/openzipkin/zipkin-slim
+    container_name: zipkin
+    ports:
+      - 9411:9411
+
