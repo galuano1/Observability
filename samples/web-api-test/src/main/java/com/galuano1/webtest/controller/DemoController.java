@@ -1,4 +1,4 @@
-package com.galuano1.webtest;
+package com.galuano1.webtest.controller;
 
 import org.springframework.web.bind.annotation.*;
 

@@ -42,7 +42,9 @@ public class TracingFilter implements Filter {
             long startTimeStamp = System.currentTimeMillis()*1000;
             long startTimeNanos = System.nanoTime();
             httpReq.setAttribute(ZipkinConstants.TRACE_ID, traceId);
+            httpReq.setAttribute(ZipkinConstants.SPAN_ID, spanId);
             httpReq.setAttribute(ZipkinConstants.PARENT_SPAN_ID, parentSpanId);
+
 
             filterChain.doFilter(servletRequest, servletResponse);
             long duration = (System.nanoTime() - startTimeNanos)/1000;
