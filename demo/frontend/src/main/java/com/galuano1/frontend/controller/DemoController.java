@@ -37,7 +37,7 @@ public class DemoController {
                 request.getAttribute(ZipkinConstants.PARENT_SPAN_ID).toString() : null;
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpPut httpPut = new HttpPut(System.getEnv("WEBTEST_URL"));
+        HttpPut httpPut = new HttpPut(System.getenv("WEBTEST_URL"));
         httpPut.addHeader(ZipkinConstants.TRACE_ID, traceId);
         httpPut.addHeader(ZipkinConstants.SPAN_ID, spanId);
         httpPut.addHeader(ZipkinConstants.PARENT_SPAN_ID, parentSpanId);
